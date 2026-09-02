@@ -4,11 +4,25 @@ Pannonico supports Neovim 0.12 only. There is no compatibility support for
 earlier or later Neovim generations and no dependency on `nvim-lspconfig` or
 Mason.
 
-Install this Git repository with your plugin manager, then configure it:
+Git and Neovim 0.12.5 are required. Add the newest immutable tag on the
+supported `0.5.x` line through Neovim's built-in package manager in `init.lua`,
+then configure it:
 
 ```lua
+vim.pack.add({
+  {
+    src = 'https://github.com/vx-rs/pannonico-neovim',
+    version = vim.version.range('0.5'),
+  },
+})
+
 require('pannonico').setup()
 ```
+
+Restart Neovim after the initial install. Create either `pannonico.yaml` or
+`.pannonico` at the project root, then open an HTML or Markdown file below that
+root. `:checkhealth vim.pack` diagnoses package installation, and
+`:PannonicoStatus` reports whether the Pannonico LSP client started.
 
 The adapter downloads the exact pinned `pannonico-lsp.wasm` and official
 Wasmtime 48.0.1 archive with `curl` on macOS/Linux or PowerShell on Windows. It
@@ -26,8 +40,10 @@ require('pannonico').setup({
 })
 ```
 
-The local file must match the release pinned by the plugin. Use
-`:PannonicoStatus` and `:PannonicoRestart` for lifecycle diagnosis.
+The local files must match the releases pinned by the plugin. Use
+`:PannonicoStatus` and `:PannonicoRestart` for lifecycle diagnosis. Failed
+managed downloads are errors; install `curl`, `tar`, and Git and rerun rather
+than replacing the pinned URLs or checksums.
 
 Wasmtime is not bundled or republished. Pannonico selects official Wasmtime
 48.0.1 under `Apache-2.0 WITH LLVM-exception`; see
