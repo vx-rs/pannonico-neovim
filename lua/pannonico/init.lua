@@ -36,13 +36,20 @@ local function verify_file(path, size, sha256)
   return bytes ~= nil and vim.fn.sha256(bytes) == sha256
 end
 
--- download_command returns the platform downloader invocation.
+-- powershell_literal quotes one download value without letting its
+-- contents become PowerShell syntax in the Windows acquisition command.
+local function powershell_literal(value)
+  return "'" .. value:gsub("'", "''") .. "'"
+end
+
+-- download_command returns the platform downloader invocation while keeping
+-- each URL and destination literal across the native process boundary.
 local function download_command(url, destination, target)
   if target:match('^windows%-') then
     return {
       'powershell.exe', '-NoProfile', '-NonInteractive', '-Command',
-      'Invoke-WebRequest -UseBasicParsing -Uri $args[0] -OutFile $args[1]',
-      url, destination,
+      ('Invoke-WebRequest -UseBasicParsing -Uri %s -OutFile %s')
+        :format(powershell_literal(url), powershell_literal(destination)),
     }
   end
   return { 'curl', '--fail', '--location', '--silent', '--show-error', '--output', destination, url }

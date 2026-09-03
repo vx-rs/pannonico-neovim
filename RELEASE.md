@@ -42,3 +42,41 @@ approved architecture change.
 
 The release publishes the reviewed `pannonico-neovim` source commit and signed
 tag. Neovim has no central marketplace or publisher account.
+
+## Verify the public tag on Windows
+
+After publication, verify that Neovim can resolve the new public tag through
+the same `0.5` version range users install. Use an unused `NVIM_APPNAME` so the
+check cannot reuse an existing plugin checkout or managed runtime:
+
+```powershell
+$env:NVIM_APPNAME = 'pannonico-release-readback'
+$config = Join-Path $env:LOCALAPPDATA "$env:NVIM_APPNAME\init.lua"
+New-Item -ItemType Directory -Force (Split-Path $config) | Out-Null
+notepad $config
+```
+
+Put this configuration in the new `init.lua`:
+
+```lua
+vim.pack.add({
+  {
+    src = 'https://github.com/vx-rs/pannonico-neovim',
+    version = vim.version.range('0.5'),
+  },
+})
+
+require('pannonico').setup()
+```
+
+Start Neovim once and let the initial installation finish. Exit, start Neovim
+again with the same `NVIM_APPNAME`, open an HTML or Markdown file in a project
+containing `pannonico.yaml` or `.pannonico`, and run `:PannonicoStatus`. The
+client must start from the public versioned checkout. Do not substitute a local
+checkout, a branch, or rebuilt candidate files for this destination readback.
+
+When the check is complete, clear the test setting in that PowerShell session:
+
+```powershell
+Remove-Item Env:NVIM_APPNAME
+```
