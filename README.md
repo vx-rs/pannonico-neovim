@@ -132,6 +132,8 @@ Press `Ctrl-X`, then `Ctrl-O`. Neovim shows matching structural keys from the
 project data. Use `Ctrl-N` and `Ctrl-P` to move through the menu, then press
 `Ctrl-Y` to accept the selected item.
 
+![Pannonico completion suggestions in Neovim](media/neovim-completion.png)
+
 To open the completion menu automatically after Pannonico's `.` trigger, add
 this block before `require('pannonico').setup()` in `init.lua`:
 
