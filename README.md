@@ -115,6 +115,58 @@ Create either `pannonico.yaml` or `.pannonico` at the project root. Open an
 HTML or Markdown file below that root, then run `:PannonicoStatus` to confirm
 that the Pannonico LSP client started.
 
+## Use Pannonico in Neovim
+
+Pannonico supplies LSP results and Neovim supplies their editor UI. With the
+minimal configuration above, Neovim does not open the completion menu
+automatically.
+
+To request completion, enter Insert mode in an HTML or Markdown file and type
+a Pannonico template path such as:
+
+```gotemplate
+{{ .data.site.
+```
+
+Press `Ctrl-X`, then `Ctrl-O`. Neovim shows matching structural keys from the
+project data. Use `Ctrl-N` and `Ctrl-P` to move through the menu, then press
+`Ctrl-Y` to accept the selected item.
+
+To open the completion menu automatically after Pannonico's `.` trigger, add
+this block before `require('pannonico').setup()` in `init.lua`:
+
+```lua
+vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+    if client
+      and client.name == 'pannonico'
+      and client:supports_method('textDocument/completion')
+    then
+      vim.lsp.completion.enable(true, client.id, event.buf, {
+        autotrigger = true,
+      })
+    end
+  end,
+})
+```
+
+Restart Neovim after changing `init.lua`. The automatic menu appears only in
+supported Pannonico template expressions. It does not trigger for ordinary
+HTML, CSS, or JavaScript dots.
+
+Pannonico also provides these LSP features:
+
+- Place the cursor on a Pannonico path and press `K` to show hover information.
+- Run `:lua vim.lsp.buf.definition()` on a path with one known source to jump
+  to its definition.
+- Save the file to receive diagnostics for definite invalid paths.
+- Run `:PannonicoStatus` to count active clients or `:PannonicoRestart` to
+  restart them.
+
 ## Runtime management
 
 The adapter downloads the exact pinned `pannonico-lsp.wasm` and official
