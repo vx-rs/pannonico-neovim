@@ -134,7 +134,7 @@ project data. Use `Ctrl-N` and `Ctrl-P` to move through the menu, then press
 
 ![Pannonico completion suggestions in Neovim](media/neovim-completion.png)
 
-To open the completion menu automatically after Pannonico's `.` trigger, add
+To open the completion menu automatically after Pannonico's dot, slash, or quote triggers, add
 this block before `require('pannonico').setup()` in `init.lua`:
 
 ```lua
@@ -160,12 +160,29 @@ Restart Neovim after changing `init.lua`. The automatic menu appears only in
 supported Pannonico template expressions. It does not trigger for ordinary
 HTML, CSS, or JavaScript dots.
 
+For example, type `{{template "` to see partial names and directories, then
+continue with `shell/` to see its children. Pannonico also completes layout
+selectors, `get`/`has` dotted keys, `index` exact keys, `pageIs` page names,
+translation fallback languages and date tokens. Hover explains known references
+and source files without showing data values. YAML/JSON configuration and data
+buffers attach to the same project server.
+
+Markdown inline, fenced, and indented code remains literal documentation, so
+Pannonico does not return template completion, hover, definitions, or
+diagnostics inside it. The same applies inside an HTML wrapper marked with
+`pannonico-verbatim`. Language features resume in live source after the
+literal region.
+
 Pannonico also provides these LSP features:
 
 - Place the cursor on a Pannonico path and press `K` to show hover information.
 - Run `:lua vim.lsp.buf.definition()` on a path with one known source to jump
   to its definition.
-- Save the file to receive diagnostics for definite invalid paths.
+- Save the file to receive compiler diagnostics for configuration/data,
+  frontmatter, template syntax and definite missing references. Run
+  `:lua vim.diagnostic.open_float()` to read the explanation. Saving a correction
+  clears the finding. CLI/MCP builds also check rendered output, which editor
+  indexing does not produce.
 - Run `:PannonicoStatus` to count active clients or `:PannonicoRestart` to
   restart them.
 
@@ -175,7 +192,7 @@ The adapter downloads the exact pinned `pannonico-lsp.wasm` and official
 Wasmtime 48.0.1 archive with `curl` on macOS/Linux or PowerShell on Windows. It
 verifies each archive and selected executable by byte length and SHA-256,
 extracts only the expected runtime member with `tar`, and enables Neovim's
-built-in LSP client for HTML and Markdown. Runtime files stay in Neovim's data
+built-in LSP client for HTML, Markdown, YAML and JSON. Runtime files stay in Neovim's data
 directory; Wasmtime's compilation cache stays in Neovim's cache directory.
 
 A separate Wasmtime installation is not required. Pannonico does not select a

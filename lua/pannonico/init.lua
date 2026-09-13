@@ -257,7 +257,10 @@ function M.setup(options)
         wasm,
       }, dispatchers, root)
     end,
-    filetypes = { 'html', 'markdown' },
+    filetypes = { 'html', 'markdown', 'yaml', 'json' },
+    -- Source discovery needs create/delete events as well as didSave. Use
+    -- Neovim's native watcher lifecycle for this client on every supported host.
+    capabilities = { workspace = { didChangeWatchedFiles = { dynamicRegistration = true } } },
     root_markers = { '.pannonico', 'pannonico.yaml' },
   })
   register_commands()
