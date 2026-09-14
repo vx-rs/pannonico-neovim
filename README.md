@@ -93,14 +93,14 @@ The Neovim configuration file is `~/.config/nvim/init.lua`.
 
 ## Install Pannonico
 
-Add the newest immutable tag on the supported `0.5.x` line through Neovim's
+Add the newest immutable tag on the supported `0.6.x` line through Neovim's
 built-in package manager, then configure the plugin:
 
 ```lua
 vim.pack.add({
   {
     src = 'https://github.com/vx-rs/pannonico-neovim',
-    version = vim.version.range('0.5'),
+    version = vim.version.range('0.6'),
   },
 })
 
