@@ -26,15 +26,17 @@ executable that is not on `PATH`. Select the versioned Wasmtime regular file,
 not a convenience symbolic link:
 
 ```sh
-export PANNONICO_TEST_WASMTIME="$HOME/.local/opt/wasmtime-48.0.1/wasmtime"
 "${PANNONICO_NVIM:-nvim}" --version
-"$PANNONICO_TEST_WASMTIME" --version
+"$HOME/.local/opt/wasmtime-48.0.1/wasmtime" --version
 ```
+
+The release build reads the exact version from `scripts/wasmtime-release.json`
+and selects that user-local regular file automatically. Set
+`PANNONICO_TEST_WASMTIME` only on an alternate acceptance host.
 
 ## Build and publish
 
 ```text
-PANNONICO_TEST_WASMTIME="$HOME/.local/opt/wasmtime-48.0.1/wasmtime" \
 npm run release:build -- neovim <plugin-version> <lsp-version>
 npm run release:neovim -- <plugin-version>
 ```
