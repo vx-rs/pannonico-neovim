@@ -1,5 +1,7 @@
 # Pannonico for Neovim
 
+> **Pre-1.0 development notice:** Pannonico is under active development. Until version 1.0.0, public contracts and user-visible behavior may change between releases. Expect breaking changes while the program and distribution model are being stabilized.
+
 Pannonico supports Neovim 0.12 only. There is no compatibility support for
 earlier or later Neovim generations and no dependency on `nvim-lspconfig` or
 Mason.
@@ -93,14 +95,14 @@ The Neovim configuration file is `~/.config/nvim/init.lua`.
 
 ## Install Pannonico
 
-Add the newest immutable tag on the supported `0.6.x` line through Neovim's
+Add the newest immutable tag on the supported `0.7.x` line through Neovim's
 built-in package manager, then configure the plugin:
 
 ```lua
 vim.pack.add({
   {
     src = 'https://github.com/vx-rs/pannonico-neovim',
-    version = vim.version.range('0.6'),
+    version = vim.version.range('0.7'),
   },
 })
 

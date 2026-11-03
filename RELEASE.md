@@ -2,6 +2,13 @@
 
 ## Release history
 
+### 0.7.0
+
+- Select Pannonico LSP 0.7.0 with the WASI stdin fix for idle sessions.
+- Translate structured protocol URI fields between host and guest paths while
+  preserving URI-like text in document contents and language-feature results.
+- Update installation and public-tag readback examples to the 0.7 release line.
+
 ### 0.6.0
 
 - Select Pannonico LSP 0.6.0 and synchronize YAML and JSON project inputs.
@@ -59,7 +66,7 @@ tag. Neovim has no central marketplace or publisher account.
 ## Verify the public tag on Windows
 
 After publication, verify that Neovim can resolve the new public tag through
-the same `0.6` version range users install. Use an unused `NVIM_APPNAME` so the
+the same `0.7` version range users install. Use an unused `NVIM_APPNAME` so the
 check cannot reuse an existing plugin checkout or managed runtime:
 
 ```powershell
@@ -75,7 +82,7 @@ Put this configuration in the new `init.lua`:
 vim.pack.add({
   {
     src = 'https://github.com/vx-rs/pannonico-neovim',
-    version = vim.version.range('0.6'),
+    version = vim.version.range('0.7'),
   },
 })
 

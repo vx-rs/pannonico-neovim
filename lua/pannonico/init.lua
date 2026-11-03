@@ -158,25 +158,37 @@ local function wasmtime_cache_config()
   return configuration
 end
 
--- map_uri_value copies one protocol value while translating only file URI
--- strings at the selected-root slash boundary.
-local function map_uri_value(value, source_root, destination_root)
-  if type(value) == 'string' then
-    if value == source_root then
-      return destination_root
-    end
-    local prefix = source_root .. '/'
-    if value:sub(1, #prefix) == prefix then
-      return destination_root .. value:sub(#source_root + 1)
-    end
-    return value
+-- map_uri translates only one protocol URI, preserving sibling roots and text.
+local function map_uri(value, source_root, destination_root)
+  if value == source_root then
+    return destination_root
   end
-  if type(value) ~= 'table' then
+  local prefix = source_root .. '/'
+  if value:sub(1, #prefix) == prefix then
+    return destination_root .. value:sub(#source_root + 1)
+  end
+  return value
+end
+
+local uri_fields = { uri = true, rootUri = true, targetUri = true, oldUri = true, newUri = true, baseUri = true }
+
+-- map_uri_value copies protocol structures, translating URI fields and the URI
+-- keys in WorkspaceEdit.changes. Text and opaque LSP data remain authored bytes;
+-- a file-URI prefix alone does not make an arbitrary string a protocol URI.
+local function map_uri_value(value, source_root, destination_root, field)
+  if type(value) == 'string' and uri_fields[field] then
+    return map_uri(value, source_root, destination_root)
+  end
+  if type(value) ~= 'table' or field == 'data' or field == 'initializationOptions' then
     return value
   end
   local mapped = {}
   for key, child in pairs(value) do
-    mapped[key] = map_uri_value(child, source_root, destination_root)
+    local mapped_key = key
+    if field == 'changes' and type(key) == 'string' then
+      mapped_key = map_uri(key, source_root, destination_root)
+    end
+    mapped[mapped_key] = map_uri_value(child, source_root, destination_root, key)
   end
   return mapped
 end
