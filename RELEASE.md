@@ -2,6 +2,12 @@
 
 ## Release history
 
+### 0.7.2
+
+- Select Pannonico LSP 0.7.1, which preserves saved compiler diagnostics after
+  equivalent or delayed full-text synchronization.
+- Retain the Neovim 0.12 minimum and verified Wasmtime 48.0.1 runtime.
+
 ### 0.7.1
 
 - Keep the Neovim 0.12 minimum and accept newer 0.x minor and patch versions.
