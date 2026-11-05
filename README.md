@@ -2,14 +2,17 @@
 
 > **Pre-1.0 development notice:** Pannonico is under active development. Until version 1.0.0, public contracts and user-visible behavior may change between releases. Expect breaking changes while the program and distribution model are being stabilized.
 
-Pannonico supports Neovim 0.12 only. There is no compatibility support for
-earlier or later Neovim generations and no dependency on `nvim-lspconfig` or
-Mason.
+Pannonico keeps its Neovim 0.12 minimum and accepts newer minor and patch
+versions within 0.x on a best-effort basis. It does not support earlier hosts
+or depend on `nvim-lspconfig` or Mason. Report observed compatibility failures
+through the issue tracker.
 
 ## Install the prerequisites
 
-Install Git and Neovim 0.12.5 before you add the plugin. Pannonico also uses
-the platform download and archive commands listed below.
+Install Git and a supported Neovim release before you add the plugin. The
+installation examples and maintained acceptance host use Neovim 0.12.5;
+they do not impose a patch-version ceiling. Pannonico also uses the platform
+download and archive commands listed below.
 
 ### Windows
 

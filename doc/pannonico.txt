@@ -1,6 +1,6 @@
 *pannonico.txt*  Pannonico project intelligence
 
-Pannonico requires Neovim 0.12.x.
+Pannonico requires Neovim 0.12.0 or newer within 0.x.
 
 SETUP                                                     *pannonico-setup*
 

@@ -243,12 +243,14 @@ local function register_commands()
   end, { desc = 'Restart Pannonico LSP clients' })
 end
 
---- Configure Pannonico through Neovim 0.12's built-in LSP lifecycle.
+--- Configure Pannonico through the built-in LSP lifecycle on supported Neovim 0.x hosts.
 --- @param options table|nil Optional exact `{ lsp_wasm_path = '...', wasmtime_path = '...' }` overrides.
 function M.setup(options)
   local version = vim.version()
-  if version.major ~= 0 or version.minor ~= 12 then
-    error('Pannonico requires Neovim 0.12.x')
+  -- Keep the original 0.12 baseline while admitting newer minor/patch hosts.
+  -- A minor equality check rejected 0.13 before the adapter could start.
+  if version.major ~= 0 or version.minor < 12 then
+    error('Pannonico requires Neovim 0.12.0 or newer within 0.x')
   end
   options = options or {}
   local wasm = acquire_lsp(options)

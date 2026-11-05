@@ -2,6 +2,12 @@
 
 ## Release history
 
+### 0.7.1
+
+- Keep the Neovim 0.12 minimum and accept newer 0.x minor and patch versions.
+  The former equality check rejected every later minor before setup.
+- Retain Pannonico LSP 0.7.0 and the verified Wasmtime 48.0.1 runtime.
+
 ### 0.7.0
 
 - Select Pannonico LSP 0.7.0 with the WASI stdin fix for idle sessions.
@@ -28,6 +34,8 @@ Every Pannonico LSP release requires a new Neovim plugin release:
 Install [Neovim 0.12.5](https://github.com/neovim/neovim/releases/tag/v0.12.5)
 and [Wasmtime 48.0.1](https://github.com/bytecodealliance/wasmtime/releases/tag/v48.0.1)
 from their official release assets.
+The named Neovim patch is the maintained test host, not an upper compatibility
+limit. Newer 0.x minor and patch hosts are eligible on a best-effort basis.
 Neovim normally resolves from `PATH`; use `PANNONICO_NVIM` only for a verified
 executable that is not on `PATH`. Select the versioned Wasmtime regular file,
 not a convenience symbolic link:
