@@ -4,7 +4,8 @@ local runtime_release = require('pannonico.runtime_release')
 local guest_project_path = '/project'
 local guest_project_uri = 'file:///project'
 
--- host_target returns the exact Wasmtime release target for this Neovim host.
+-- host_target names the OS and processor pair used to select the Wasmtime
+-- archive. Unsupported hosts fail before the plugin downloads anything.
 local function host_target()
   local uname = vim.uv.os_uname()
   local os_name = ({ Darwin = 'darwin', Linux = 'linux', Windows_NT = 'windows' })[uname.sysname]
@@ -63,7 +64,9 @@ local function run_checked(command, label)
   end
 end
 
--- acquire_lsp returns the verified pinned WASI module or an exact local override.
+-- acquire_lsp uses a local override only if it matches the pinned module.
+-- Otherwise it checks the versioned Neovim data cache and downloads a fresh
+-- copy when needed. The downloaded bytes must verify before the final rename.
 local function acquire_lsp(options)
   if options.lsp_wasm_path then
     local configured = vim.fs.normalize(options.lsp_wasm_path)
@@ -95,7 +98,9 @@ local function extraction_command(archive, directory, artifact)
   return { 'tar', '-xf', archive, '-C', directory, artifact.member }
 end
 
--- acquire_wasmtime returns the verified runtime executable for this host.
+-- acquire_wasmtime selects the runtime for this host. It verifies a local
+-- override or the cached executable. When it downloads an archive, it
+-- verifies both the archive and the extracted executable before reuse.
 local function acquire_wasmtime(options)
   local target = host_target()
   local artifact = assert(runtime_release.artifacts[target], 'missing Wasmtime release target ' .. target)
@@ -141,7 +146,9 @@ local function acquire_wasmtime(options)
   return destination
 end
 
--- wasmtime_cache_config creates the editor-owned compilation-cache setting.
+-- wasmtime_cache_config points Wasmtime at a directory under Neovim's cache.
+-- The launcher passes the returned TOML file to each run so later starts
+-- can reuse the compiled module.
 local function wasmtime_cache_config()
   local directory = vim.fs.joinpath(vim.fn.stdpath('cache'), 'pannonico', 'wasmtime')
   local cache_directory = vim.fs.joinpath(directory, 'modules')
@@ -158,7 +165,8 @@ local function wasmtime_cache_config()
   return configuration
 end
 
--- map_uri translates only one protocol URI, preserving sibling roots and text.
+-- map_uri replaces a URI when it equals the source root or lies beneath it.
+-- The slash test keeps similarly named sibling directories outside the map.
 local function map_uri(value, source_root, destination_root)
   if value == source_root then
     return destination_root
@@ -193,14 +201,17 @@ local function map_uri_value(value, source_root, destination_root, field)
   return mapped
 end
 
--- start_project_rpc keeps Neovim's host-side root ownership while presenting
--- only the fixed /project preopen and file:///project protocol root to the LSP.
+-- start_project_rpc starts the server in the selected editor project. Neovim
+-- sees the host paths, while the WASI server sees that same directory at
+-- /project. Requests and replies translate between the two URI roots.
 local function start_project_rpc(command, dispatchers, root)
   local host_uri = vim.uri_from_fname(root)
   local translated_dispatchers = {
+    -- Rewrite diagnostic and notification URIs before Neovim sees them.
     notification = function(method, params)
       return dispatchers.notification(method, map_uri_value(params, guest_project_uri, host_uri))
     end,
+    -- Pass server requests to Neovim and map its reply back to project URIs.
     server_request = function(method, params)
       local result, err = dispatchers.server_request(method, map_uri_value(params, guest_project_uri, host_uri))
       return map_uri_value(result, host_uri, guest_project_uri), err
@@ -212,6 +223,7 @@ local function start_project_rpc(command, dispatchers, root)
   return {
     is_closing = rpc.is_closing,
     terminate = rpc.terminate,
+    -- Send document notifications with WASI paths. Keep the initialized payload as sent.
     notify = function(method, params)
       local mapped = map_uri_value(params, host_uri, guest_project_uri)
       if method == 'initialized' then
@@ -219,6 +231,7 @@ local function start_project_rpc(command, dispatchers, root)
       end
       return rpc.notify(method, mapped)
     end,
+    -- Give initialize a root inside WASI and return result URIs in host form.
     request = function(method, params, callback, notify_reply_callback)
       local mapped = map_uri_value(params, host_uri, guest_project_uri)
       if method == 'initialize' and mapped then
@@ -243,7 +256,9 @@ local function register_commands()
   end, { desc = 'Restart Pannonico LSP clients' })
 end
 
---- Configure Pannonico through the built-in LSP lifecycle on supported Neovim 0.x hosts.
+--- Enable Pannonico for Neovim 0.12 and later 0.x releases. The plugin launches
+--- the verified WASI module in the nearest marked project. It uses the
+--- pinned runtime from the cache or downloads it when needed.
 --- @param options table|nil Optional exact `{ lsp_wasm_path = '...', wasmtime_path = '...' }` overrides.
 function M.setup(options)
   local version = vim.version()
@@ -257,6 +272,7 @@ function M.setup(options)
   local wasmtime = acquire_wasmtime(options)
   local cache_config = wasmtime_cache_config()
   vim.lsp.config('pannonico', {
+    -- Start one server with the selected project mounted at the guest root.
     cmd = function(dispatchers, config)
       local root = assert(config.root_dir, 'Pannonico LSP requires a marked project root')
       return start_project_rpc({

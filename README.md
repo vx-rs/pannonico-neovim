@@ -2,10 +2,10 @@
 
 > **Pre-1.0 development notice:** Pannonico is under active development. Until version 1.0.0, public contracts and user-visible behavior may change between releases. Expect breaking changes while the program and distribution model are being stabilized.
 
-Pannonico keeps its Neovim 0.12 minimum and accepts newer minor and patch
-versions within 0.x on a best-effort basis. It does not support earlier hosts
-or depend on `nvim-lspconfig` or Mason. Report observed compatibility failures
-through the issue tracker.
+Use Neovim 0.12 or a newer 0.x release. Pannonico uses Neovim's built-in
+LSP client to start a server when you open a file in a marked project.
+The plugin acquires its pinned server and Wasmtime runtime directly.
+Report compatibility failures through the issue tracker.
 
 ## Install the prerequisites
 
