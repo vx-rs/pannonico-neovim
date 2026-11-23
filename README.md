@@ -10,7 +10,7 @@ Report compatibility failures through the issue tracker.
 ## Install the prerequisites
 
 Install Git and a supported Neovim release before you add the plugin. The
-installation examples and maintained acceptance host use Neovim 0.12.5;
+installation examples and maintained acceptance host use Neovim 0.12.6;
 they do not impose a patch-version ceiling. Pannonico also uses the platform
 download and archive commands listed below.
 
@@ -20,7 +20,7 @@ Install Git and the supported Neovim release from PowerShell:
 
 ```powershell
 winget install --exact --id Git.Git
-winget install --exact --id Neovim.Neovim --version 0.12.5
+winget install --exact --id Neovim.Neovim --version 0.12.6
 ```
 
 Open a new terminal after installation, then verify Git, Neovim, Windows
@@ -66,12 +66,12 @@ sudo apt-get update
 sudo apt-get install -y git curl tar
 ```
 
-Install the official Neovim 0.12.5 archive for the machine's architecture.
+Install the official Neovim 0.12.6 archive for the machine's architecture.
 Use this block on x86-64:
 
 ```sh
 curl --fail --location --remote-name \
-  https://github.com/neovim/neovim/releases/download/v0.12.5/nvim-linux-x86_64.tar.gz
+  https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-x86_64.tar.gz
 sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
 sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
 ```
@@ -80,7 +80,7 @@ Use this block on ARM64 instead:
 
 ```sh
 curl --fail --location --remote-name \
-  https://github.com/neovim/neovim/releases/download/v0.12.5/nvim-linux-arm64.tar.gz
+  https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-arm64.tar.gz
 sudo tar -C /opt -xzf nvim-linux-arm64.tar.gz
 sudo ln -sf /opt/nvim-linux-arm64/bin/nvim /usr/local/bin/nvim
 ```
@@ -98,14 +98,14 @@ The Neovim configuration file is `~/.config/nvim/init.lua`.
 
 ## Install Pannonico
 
-Add the newest immutable tag on the supported `0.7.x` line through Neovim's
+Add the newest immutable tag on the supported `0.8.x` line through Neovim's
 built-in package manager, then configure the plugin:
 
 ```lua
 vim.pack.add({
   {
     src = 'https://github.com/vx-rs/pannonico-neovim',
-    version = vim.version.range('0.7'),
+    version = vim.version.range('0.8'),
   },
 })
 
@@ -194,14 +194,14 @@ Pannonico also provides these LSP features:
 ## Runtime management
 
 The adapter downloads the exact pinned `pannonico-lsp.wasm` and official
-Wasmtime 48.0.1 archive with `curl` on macOS/Linux or PowerShell on Windows. It
+Wasmtime 51.0.0 archive with `curl` on macOS/Linux or PowerShell on Windows. It
 verifies each archive and selected executable by byte length and SHA-256,
 extracts only the expected runtime member with `tar`, and enables Neovim's
 built-in LSP client for HTML, Markdown, YAML and JSON. Runtime files stay in Neovim's data
 directory; Wasmtime's compilation cache stays in Neovim's cache directory.
 
 A separate Wasmtime installation is not required. Pannonico does not select a
-`wasmtime` executable from `PATH`; it uses the downloaded and verified 48.0.1
+`wasmtime` executable from `PATH`; it uses the downloaded and verified 51.0.0
 runtime unless an exact local override is configured. If another Wasmtime
 version is already installed, it can remain on the machine. You do not need to
 downgrade or remove it.
@@ -232,8 +232,8 @@ for the host above, then rerun rather than replacing the pinned URLs or
 checksums.
 
 Wasmtime is not bundled or republished. Pannonico selects official Wasmtime
-48.0.1 under `Apache-2.0 WITH LLVM-exception`; see
-<https://github.com/bytecodealliance/wasmtime/releases/tag/v48.0.1>.
+51.0.0 under `Apache-2.0 WITH LLVM-exception`; see
+<https://github.com/bytecodealliance/wasmtime/releases/tag/v51.0.0>.
 
 Report plugin issues at <https://github.com/vx-rs/pannonico-neovim/issues>.
 Report suspected vulnerabilities privately at

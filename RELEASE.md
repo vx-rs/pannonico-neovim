@@ -2,6 +2,12 @@
 
 ## Release history
 
+### 0.8.0
+
+- Select Pannonico LSP 0.8.0 and Wasmtime 51.0.0.
+- Keep Neovim 0.12 as the minimum. Use Neovim 0.12.6 for maintained
+  acceptance.
+
 ### 0.7.2
 
 - Select Pannonico LSP 0.7.1, which preserves saved compiler diagnostics after
@@ -37,8 +43,8 @@ Every Pannonico LSP release requires a new Neovim plugin release:
 
 ## Prerequisites
 
-Install [Neovim 0.12.5](https://github.com/neovim/neovim/releases/tag/v0.12.5)
-and [Wasmtime 48.0.1](https://github.com/bytecodealliance/wasmtime/releases/tag/v48.0.1)
+Install [Neovim 0.12.6](https://github.com/neovim/neovim/releases/tag/v0.12.6)
+and [Wasmtime 51.0.0](https://github.com/bytecodealliance/wasmtime/releases/tag/v51.0.0)
 from their official release assets.
 The named Neovim patch is the maintained test host, not an upper compatibility
 limit. Newer 0.x minor and patch hosts are eligible on a best-effort basis.
@@ -48,7 +54,7 @@ not a convenience symbolic link:
 
 ```sh
 "${PANNONICO_NVIM:-nvim}" --version
-"$HOME/.local/opt/wasmtime-48.0.1/wasmtime" --version
+"$HOME/.local/opt/wasmtime-51.0.0/wasmtime" --version
 ```
 
 The release build reads the exact version from `scripts/wasmtime-release.json`
@@ -80,7 +86,7 @@ tag. Neovim has no central marketplace or publisher account.
 ## Verify the public tag on Windows
 
 After publication, verify that Neovim can resolve the new public tag through
-the same `0.7` version range users install. Use an unused `NVIM_APPNAME` so the
+the same `0.8` version range users install. Use an unused `NVIM_APPNAME` so the
 check cannot reuse an existing plugin checkout or managed runtime:
 
 ```powershell
@@ -96,7 +102,7 @@ Put this configuration in the new `init.lua`:
 vim.pack.add({
   {
     src = 'https://github.com/vx-rs/pannonico-neovim',
-    version = vim.version.range('0.7'),
+    version = vim.version.range('0.8'),
   },
 })
 
