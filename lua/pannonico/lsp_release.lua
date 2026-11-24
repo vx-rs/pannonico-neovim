@@ -1,10 +1,10 @@
--- Exact WASI LSP pin generated from source revision 3799bcd04abd4ae2a366a0bef9020208a6aa15bf.
+-- Exact WASI LSP pin generated from source revision c05fba1e996a222a05d2675ed1afca8083d4a7fc.
 return {
   version = '0.8.0',
-  source_revision = '3799bcd04abd4ae2a366a0bef9020208a6aa15bf',
+  source_revision = 'c05fba1e996a222a05d2675ed1afca8083d4a7fc',
   ide_contract = '1',
   filename = 'pannonico-lsp.wasm',
   url = 'https://github.com/vx-rs/pannonico-lsp/releases/download/v0.8.0/pannonico-lsp.wasm',
   size = 11409506,
-  sha256 = '2ae37d555662907b9ea2aa9414c79801f777c9c22093148437e7fa7d14e733c8',
+  sha256 = 'ce52d14b016a0f6b56fa30c3ce185bf7d8dddc9955c72ac586c826917402fa83',
 }
